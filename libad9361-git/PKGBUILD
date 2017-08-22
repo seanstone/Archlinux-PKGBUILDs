@@ -1,0 +1,41 @@
+# Maintainer: En Shih <sean@tispace.com>
+
+_pkgname=libad9361
+pkgname="$_pkgname-git"
+pkgver=r20.6027674
+pkgrel=1
+pkgdesc="TODO"
+arch=('i686' 'x86_64' 'armv7h')
+url="https://github.com/analogdevicesinc/libad9361-iio"
+license=('LGPL2')
+depends=()
+makedepends=('git')
+source=("$_pkgname::git+https://github.com/analogdevicesinc/libad9361")
+md5sums=('SKIP')
+
+pkgver() {
+  cd "$_pkgname"
+  ( set -o pipefail
+    git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+
+prepare() {
+  mkdir -p "$srcdir/$_pkgname/build"
+}
+
+build() {
+  cd "$srcdir/$_pkgname/build"
+  cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd "$srcdir/$_pkgname/build"
+  make DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sts=2 sw=2 et:
