@@ -1,0 +1,56 @@
+# $Id$
+# Maintainer: En Shih <sean@tispace.com>
+
+pkgname=riscv-gnu-toolchain-rv32i
+pkgver=20171231
+_commit=bf5697a
+pkgrel=1
+pkgdesc="RISC-V GNU Compiler Toolchain (rv32i)"
+arch=('i686' 'x86_64')
+url="https://github.com/riscv/riscv-gnu-toolchain-rv32i"
+license=('LGPL')
+depends=()
+makedepends=('git')
+conflicts=()
+options=() 
+install=
+source=("git+https://github.com/riscv/riscv-gnu-toolchain.git"
+        "git+https://github.com/riscv/riscv-binutils-gdb.git"
+        "git+https://github.com/riscv/riscv-dejagnu.git"
+        "git+https://github.com/riscv/riscv-gcc.git"
+        "git+https://github.com/riscv/riscv-glibc.git"
+        "git+https://github.com/riscv/riscv-newlib.git")
+md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+
+_gitname="riscv-gnu-toolchain"
+
+pkgver() {
+  cd "$srcdir/$_gitname"
+  git show -s --format="%ci" HEAD | sed -e 's/-//g' -e 's/ .*//'
+}
+
+prepare() {
+  cd "$srcdir/$_gitname"
+  git submodule init
+  git config submodule.riscv-binutils-gdb.url $srcdir/riscv-binutils-gdb
+  git config submodule.riscv-dejagnu.url $srcdir/riscv-dejagnu
+  git config submodule.riscv-gcc.url $srcdir/riscv-gcc
+  git config submodule.riscv-glibc.url $srcdir/riscv-glibc
+  git config submodule.riscv-newlib.url $srcdir/riscv-newlib
+  git submodule update
+}
+
+build() {
+  cd "$srcdir/$_gitname"
+  mkdir -p build
+  cd build
+  ../configure --with-arch=rv32i
+  make -j4
+}
+
+package() {
+  cd "$srcdir/$_gitname/build"
+  make DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:
