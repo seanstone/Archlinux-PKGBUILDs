@@ -3,7 +3,7 @@
 
 _pkgname=libiio
 pkgname="$_pkgname-git"
-pkgver=v0.10.r9.g82a23b2
+pkgver=v0.15.r6.gc80412c
 pkgrel=1
 pkgdesc="TODO"
 arch=('i686' 'x86_64' 'armv7h')

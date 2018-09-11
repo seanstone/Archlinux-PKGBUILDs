@@ -2,7 +2,7 @@
 # Modified from gr-osmosdr-git PKGBUILD
 
 pkgname=gr-osmosdr-gqrx-git
-pkgver=f9790e
+pkgver=960c57
 pkgrel=1
 pkgdesc="GNU Radio source block for OsmoSDR, which is a 100% Free Software based small form-factor inexpensive SDR (Software Defined Radio) project."
 arch=('i686' 'x86_64')

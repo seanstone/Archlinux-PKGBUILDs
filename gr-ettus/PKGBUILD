@@ -1,0 +1,34 @@
+# Maintainer: En Shih <sean@tispace.com>
+
+pkgname=gr-ettus-git
+pkgver=51e8828
+pkgrel=1
+pkgdesc="Out-of-tree GNU Radio Module for Experimental Ettus Research Features"
+arch=('any')
+url="https://github.com/EttusResearch/gr-ettus.git"
+license=('GPL')
+depends=('gnuradio')
+makedepends=('cmake')
+provides=('gr-ettus')
+source=('git+https://github.com/EttusResearch/gr-ettus.git')
+sha1sums=('SKIP')
+_gitname=gr-ettus
+
+pkgver() {
+  cd $_gitname
+  echo $(git describe --always | sed 's/-/./g' | sed 's/^v//g')
+}
+
+build() {
+  cd $_gitname
+  mkdir build && cd build
+  cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+  make
+}
+
+package() {
+  cd $_gitname
+  cd build
+  make DESTDIR=${pkgdir} install
+}
+

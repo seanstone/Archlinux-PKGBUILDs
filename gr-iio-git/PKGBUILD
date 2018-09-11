@@ -2,7 +2,7 @@
 
 _pkgname=gr-iio
 pkgname="$_pkgname-git"
-pkgver=v0.2.r36.g54c86a5
+pkgver=v0.3.r14.g1094364
 pkgrel=1
 pkgdesc="TODO"
 arch=('i686' 'x86_64' 'armv7h')

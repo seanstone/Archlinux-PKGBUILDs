@@ -2,7 +2,7 @@
 
 _pkgname=libad9361
 pkgname="$_pkgname-git"
-pkgver=r20.6027674
+pkgver=v0.1.r15.gf4562d5
 pkgrel=1
 pkgdesc="TODO"
 arch=('i686' 'x86_64' 'armv7h')
