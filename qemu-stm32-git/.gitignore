@@ -1,0 +1,4 @@
+qemu_stm32/
+src/
+*.log*
+*.pkg.tar.xz
