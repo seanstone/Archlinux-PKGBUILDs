@@ -1,0 +1,7 @@
+*.pkg.tar.xz
+*.log
+*.log.*
+gvt-linux/
+src/
+pkg/
+linux.install.pkg
