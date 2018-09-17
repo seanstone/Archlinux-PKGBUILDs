@@ -1,0 +1,13 @@
+pkgbase = qemu_stm32-git
+	pkgdesc = QEMU with STM32 Microcontroller Implementation
+	pkgver = v2.5.0.r5547.gf9a011f58e
+	pkgrel = 1
+	url = https://github.com/beckus/qemu_stm32
+	arch = x86_64
+	license = GPL2
+	makedepends = git
+	source = git://github.com/b1l1s/qemu.git#branch=stm32-2.7
+	md5sums = SKIP
+
+pkgname = qemu_stm32-git
+

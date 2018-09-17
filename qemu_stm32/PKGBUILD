@@ -1,0 +1,59 @@
+# This is an example PKGBUILD file. Use this as a start to creating your own,
+# and remove these comments. For more information, see 'man PKGBUILD'.
+# NOTE: Please fill out the license field for your package! If it is unknown,
+# then please put 'unknown'.
+
+# See http://wiki.archlinux.org/index.php/VCS_PKGBUILD_Guidelines
+# for more information on packaging from GIT sources.
+
+# Maintainer: Your Name <seanstone5923@gmail.com>
+pkgname=qemu_stm32-git
+pkgver=v2.5.0.r5547.gf9a011f58e
+pkgrel=1
+pkgdesc="QEMU with STM32 Microcontroller Implementation"
+arch=('x86_64')
+url="https://github.com/beckus/qemu_stm32"
+license=('GPL2')
+groups=()
+depends=()
+makedepends=('git')
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+source=('git://github.com/b1l1s/qemu.git#branch=stm32-2.7')
+noextract=()
+md5sums=('SKIP') #generate with 'makepkg -g'
+
+_gitroot='git://github.com/b1l1s/qemu.git#branch=stm32-2.7'
+_gitname='qemu'
+
+pkgver() {
+  cd "$_gitname"
+  git describe --long | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+  cd "$_gitname"
+
+  ./configure --disable-werror --enable-debug \
+    --target-list="arm-softmmu" \
+    --extra-cflags=-DDEBUG_CLKTREE \
+    --extra-cflags=-DDEBUG_STM32_RCC \
+    --extra-cflags=-DDEBUG_STM32_UART \
+    --extra-cflags=-DDEBUG_STM32_TIMER \
+    --extra-cflags=-DDEBUG_GIC \
+    --extra-cflags=-DSTM32_UART_ENABLE_OVERRUN \
+    --python=/usr/bin/python2 \
+    --prefix=/opt/qemu_stm32
+  make
+}
+
+package() {
+  cd "$srcdir/$_gitname"
+  make DESTDIR="$pkgdir/" install
+}
+
+# vim:set ts=2 sw=2 et:
