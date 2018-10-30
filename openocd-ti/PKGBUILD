@@ -1,15 +1,15 @@
-# Maintainer: yhfudev <yhfudev ta gmail dot com>
+# Maintainer:  En Shih <seanstone5923@gmail.com>
+# Contributor: yhfudev <yhfudev ta gmail dot com>
 # Contributor: veox <veox ta wemakethings dot net>
 # Contributor: Nick Østergaard <oe.nick at gmail dot com>
 # Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
 # Contributor: Matthias Bauch <matthias.bauch@gmail.com>
 # Contributor: Laszlo Papp <djszapi2 at gmail com>
 # Contributor: Samuel Tardieu <sam@rfc1149.net>
-# Contributor: En Shih <seanstone5923@gmail.com>
 
 pkgname=openocd-ti
 _gitname=openocd-ti
-pkgver=0.9.0.r44.g3edb157
+pkgver=OpenOCD.0.10.0_TI.1.0.r11.g4765fd4
 pkgrel=1
 pkgdesc="Debugging, in-system programming and boundary-scan testing for embedded target devices (git version)"
 arch=('i686' 'x86_64' 'arm')
@@ -23,8 +23,7 @@ provides=('openocd')
 conflicts=('openocd')
 
 source=(
-    "${_gitname}::git://github.com/seanstone/openocd-ti.git"
-    #"openocd-0.9.0-exit-clean.patch"
+    "${_gitname}::git://git.ti.com/sdo-emu/openocd.git"
     )
 md5sums=(
     'SKIP'
@@ -73,51 +72,30 @@ _features=(
     #zy1000-master
     )
 
-pkgver_git_bak() {
-    cd "${srcdir}/${pkgname}"
-    local ver="$(git show | grep commit | awk '{print $2}' )"
-    #printf "r%s" "${ver//[[:alpha:]]}"
-    echo ${ver:0:7}
-}
-
-pkgver_git() {
+pkgver() {
     cd "${srcdir}/${pkgname}"
     git describe --tags --long | sed -E 's/^v//;s/([^-]*-g)/r\1/;s/-/./g'
 }
 
-pkgver_svn() {
-    cd "${srcdir}/${pkgname}"
-    #printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-    local ver="$(svn info | grep Revision | awk '{print $2}' )"
-    #printf "r%s" "${ver//[[:alpha:]]}"
-    echo ${ver:0:7}
-}
-
-pkgver() {
-    pkgver_git_bak
-}
-
 prepare() {
-  cd "$srcdir/${_gitname}"
-  #patch -p1 <$srcdir/openocd-0.9.0-exit-clean.patch
+  cd "$srcdir/${_gitname}/openocd"
 }
 
 build() {
-  cd "$srcdir/${_gitname}"
+  cd "$srcdir/${_gitname}/openocd"
 
-  ./bootstrap
+  autoreconf -fi
   ./configure --prefix=/usr \
     --enable-maintainer-mode \
     --disable-werror \
-    ${_features[@]/#/--enable-} \
-    $(NULL)
+    ${_features[@]/#/--enable-}
 
   #make clean
   make
 }
 
 package() {
-  cd "$srcdir/${_gitname}"
+  cd "$srcdir/${_gitname}/openocd"
   make DESTDIR=${pkgdir} install
   rm -rf ${srcdir}/$_gitname-build
   rm -rf $pkgdir/usr/share/info/dir
