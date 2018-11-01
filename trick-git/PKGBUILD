@@ -1,0 +1,30 @@
+# Maintainer: Your Name <seanstone5923@gmail.com>
+pkgname=trick-git
+pkgver=r1035.348bbb37
+pkgrel=1
+pkgdesc="Trick Simulation Environment"
+arch=('x86_64')
+url="https://github.com/nasa/trick"
+license=('custom')
+depends=('llvm' 'clang' 'python2' 'perl' 'java-runtime' 'swig' 'openmotif' 'udunits')
+makedepends=('git')
+provides=('trick')
+conflicts=('trick')
+source=("git+https://github.com/nasa/trick.git")
+md5sums=('SKIP')
+
+pkgver() {
+    cd "$srcdir/trick"
+    echo "r$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+}
+
+build() {
+  cd "$srcdir/trick"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "$srcdir/trick"
+  make DESTDIR="$pkgdir" install
+}
