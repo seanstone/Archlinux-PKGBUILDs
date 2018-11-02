@@ -10,12 +10,17 @@ depends=('llvm' 'clang' 'python2' 'perl' 'java-runtime' 'swig' 'openmotif' 'udun
 makedepends=('git')
 provides=('trick')
 conflicts=('trick')
-source=("git+https://github.com/nasa/trick.git")
-md5sums=('SKIP')
+source=('git+https://github.com/nasa/trick.git' 'install-destdir.patch')
+md5sums=('SKIP' 'SKIP')
 
 pkgver() {
     cd "$srcdir/trick"
     echo "r$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+    cd $srcdir/trick
+    patch -Np1 -i "$srcdir/install-destdir.patch"
 }
 
 build() {
@@ -26,5 +31,5 @@ build() {
 
 package() {
   cd "$srcdir/trick"
-  make DESTDIR="$pkgdir" install
+  make DESTDIR=$pkgdir install
 }

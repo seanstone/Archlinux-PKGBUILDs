@@ -1,0 +1,27 @@
+diff --git a/Makefile b/Makefile
+index 6b0192b5..ca1f72f8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -337,9 +337,9 @@ clean_gui: clean_java
+ #                                 INSTALL Targets
+ ################################################################################
+ 
+-ER7_HEADERS := $(addprefix $(PREFIX)/include/, $(filter er7_utils/%, $(shell cd trick_source && find er7_utils -name \*.hh)))
++ER7_HEADERS := $(addprefix $(DESTDIR)/$(PREFIX)/include/, $(filter er7_utils/%, $(shell cd trick_source && find er7_utils -name \*.hh)))
+ 
+-${ER7_HEADERS} : ${PREFIX}/include/% : trick_source/%
++${ER7_HEADERS} : ${DESTDIR}/${PREFIX}/include/% : trick_source/%
+ 	@ mkdir -p ${@D}
+ 	install -m 0644 $? $@
+ 
+@@ -356,8 +356,8 @@ install: ${ER7_HEADERS}
+ 	fi; \
+ 	fi
+ 
+-	cp -r bin include $(notdir ${TRICK_LIB_DIR}) libexec share ${PREFIX}
+-	@echo -e "\n\e[32mTrick has been installed successfully to ${PREFIX}.\e[0m\n"
++	cp -r bin include $(notdir ${TRICK_LIB_DIR}) libexec share ${DESTDIR}/${PREFIX}
++	@echo -e "\n\e[32mTrick has been installed successfully to ${DESTDIR}/${PREFIX}.\e[0m\n"
+ 
+ uninstall:
+ 	rm -f ${PREFIX}/bin/trick-CP
