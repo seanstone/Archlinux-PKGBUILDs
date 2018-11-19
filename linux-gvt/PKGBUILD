@@ -12,18 +12,13 @@ url="https://github.com/intel/gvt-linux/archive/$_srcver.tar.gz"
 license=(GPL2)
 makedepends=(xmlto kmod inetutils bc libelf git python-sphinx graphviz)
 options=('!strip')
-_srcname=archlinux-linux
+_srcname=gvt-linux-$_srcver
 source=(
-  "$_srcname::git+https://git.archlinux.org/linux.git?signed#tag=v$_srcver"
+  "https://github.com/intel/gvt-linux/archive/$_srcver.tar.gz"
   config         # the main kernel config file
   60-linux.hook  # pacman hook for depmod
   90-linux.hook  # pacman hook for initramfs regeneration
   linux.preset   # standard config files for mkinitcpio ramdisk
-)
-validpgpkeys=(
-  'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
-  '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
-  '8218F88849AAC522E94CF470A5E9288C4FA415FA'  # Jan Alexander Steffens (heftig)
 )
 sha256sums=('SKIP'
             '588a2eb551397cd6b5cfc2434fb6936819779f43ff03f112289e17fa08390ca9'
