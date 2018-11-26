@@ -1,4 +1,4 @@
-# Maintainer: Your Name <seanstone5923@gmail.com>
+# Maintainer: En Shih <seanstone5923@gmail.com>
 pkgname=trick-git
 pkgver=r1035.348bbb37
 pkgrel=1
@@ -11,7 +11,8 @@ makedepends=('git')
 provides=('trick')
 conflicts=('trick')
 source=('git+https://github.com/nasa/trick.git' 'install-destdir.patch')
-md5sums=('SKIP' 'SKIP')
+md5sums=('SKIP'
+         '09f11823eb6970b13d504d24f58929d8')
 
 pkgver() {
     cd "$srcdir/trick"
