@@ -32,5 +32,6 @@ package() {
     mkdir -p usr/lib/modules
     cp -r lib/modules/$(uname -r)/misc usr/lib/modules/$(uname -r)/
     mv usr/local/bin usr/
+    cp -r $srcdir/peak-linux-driver-$pkgver/lib/lib usr/
     rm -r etc lib usr/local
 }
