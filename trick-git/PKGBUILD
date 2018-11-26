@@ -1,6 +1,6 @@
 # Maintainer: En Shih <seanstone5923@gmail.com>
 pkgname=trick-git
-pkgver=r1035.348bbb37
+pkgver=r1048.ca993860
 pkgrel=1
 pkgdesc="Trick Simulation Environment"
 arch=('x86_64')
