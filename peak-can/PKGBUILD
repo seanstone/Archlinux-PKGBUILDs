@@ -11,7 +11,7 @@ makedepends=()
 provides=()
 conflicts=()
 source=("https://www.peak-system.com/fileadmin/media/linux/files/peak-linux-driver-$pkgver.tar.gz")
-md5sums=('SKIP')
+md5sums=('f62d94c721aa6a83316fcb4232631a64')
 
 build() {
     cd $srcdir/peak-linux-driver-$pkgver/driver
