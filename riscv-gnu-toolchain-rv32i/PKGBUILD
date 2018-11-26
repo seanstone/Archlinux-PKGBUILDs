@@ -1,5 +1,4 @@
-# $Id$
-# Maintainer: En Shih <sean@tispace.com>
+# Maintainer: En Shih <seanstone5923@gmail.com>
 
 pkgname=riscv-gnu-toolchain-rv32i
 pkgver=20171231
@@ -12,7 +11,7 @@ license=('LGPL')
 depends=()
 makedepends=('git')
 conflicts=()
-options=() 
+options=()
 install=
 source=("git+https://github.com/riscv/riscv-gnu-toolchain.git"
         "git+https://github.com/riscv/riscv-binutils-gdb.git"
