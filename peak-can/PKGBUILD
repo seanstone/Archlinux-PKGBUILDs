@@ -1,0 +1,37 @@
+# Maintainer: En Shih <seanstone5923@gmail.com>
+pkgname=peak-can
+pkgver=8.6.0
+pkgrel=1
+pkgdesc="PEAK CAN Linux driver"
+arch=('x86_64')
+url="https://www.peak-system.com"
+license=('gpl2')
+depends=('linux-headers')
+makedepends=()
+provides=()
+conflicts=()
+source=("https://www.peak-system.com/fileadmin/media/linux/files/peak-linux-driver-$pkgver.tar.gz")
+md5sums=('f62d94c721aa6a83316fcb4232631a64')
+
+build() {
+    cd $srcdir/peak-linux-driver-$pkgver/driver
+    make \
+        KERNEL_LOCATION=/usr/lib/modules/$(uname -r)/build \
+        DNG=NO_DONGLE_SUPPORT \
+        USB=NO_USB_SUPPORT \
+        PCI=PCI_SUPPORT \
+        PCIEC=NO_PCIEC_SUPPORT \
+        ISA=NO_ISA_SUPPORT \
+        PCC=NO_PCC_SUPPORT
+}
+
+package() {
+    cd $srcdir/peak-linux-driver-$pkgver/driver
+    make DESTDIR=$pkgdir install
+    cd $pkgdir
+    mkdir -p usr/lib/modules
+    cp -r lib/modules/$(uname -r)/misc usr/lib/modules/$(uname -r)/
+    mv usr/local/bin usr/
+    cp -r $srcdir/peak-linux-driver-$pkgver/lib/lib usr/
+    rm -r etc lib usr/local
+}

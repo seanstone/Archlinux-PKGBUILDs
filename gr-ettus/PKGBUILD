@@ -1,4 +1,4 @@
-# Maintainer: En Shih <sean@tispace.com>
+# Maintainer: En Shih <seanstone5923@gmail.com>
 
 pkgname=gr-ettus-git
 pkgver=51e8828
@@ -31,4 +31,3 @@ package() {
   cd build
   make DESTDIR=${pkgdir} install
 }
-
