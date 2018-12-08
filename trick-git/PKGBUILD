@@ -1,6 +1,6 @@
 # Maintainer: Your Name <seanstone5923@gmail.com>
 pkgname=trick-git
-pkgver=r1035.348bbb37
+pkgver=r1057.e47cf8d9
 pkgrel=1
 pkgdesc="Trick Simulation Environment"
 arch=('x86_64')
@@ -10,8 +10,8 @@ depends=('llvm' 'clang' 'python2' 'perl' 'java-runtime' 'swig' 'openmotif' 'udun
 makedepends=('git')
 provides=('trick')
 conflicts=('trick')
-source=('git+https://github.com/nasa/trick.git' 'install-destdir.patch')
-md5sums=('SKIP' 'SKIP')
+source=('git+https://github.com/nasa/trick.git' 'install-destdir.patch' 'swig-no-includeall.patch')
+md5sums=('SKIP' 'SKIP' 'SKIP')
 
 pkgver() {
     cd "$srcdir/trick"
