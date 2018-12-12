@@ -25,7 +25,7 @@ prepare() {
 
 build() {
   cd "$srcdir/trick"
-  ./configure --prefix=/usr
+  PYTHON_VERSION=3 ./configure --prefix=/usr
   make
 }
 
