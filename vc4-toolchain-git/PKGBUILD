@@ -34,5 +34,5 @@ build() {
 package() {
   cd "$srcdir/vc4-toolchain"
   mkdir -p $pkgdir/usr
-  cp -r prefix/{bin,include,lib,libexec,share} $pkgdir/usr
+  cp -r prefix/{bin,lib/gcc,libexec} $pkgdir/usr
 }
