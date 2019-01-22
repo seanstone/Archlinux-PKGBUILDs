@@ -1,6 +1,6 @@
 # Maintainer: En Shih <seanstone5923@gmail.com>
 pkgname=trick-git
-pkgver=r1057.e47cf8d9
+pkgver=r1064.6240b2a8
 pkgrel=1
 pkgdesc="Trick Simulation Environment"
 arch=('x86_64')
@@ -19,7 +19,7 @@ pkgver() {
 }
 
 prepare() {
-    cd $srcdir/trick
+    cd "$srcdir/trick"
     patch -Np1 -i "$srcdir/install-destdir.patch"
 }
 
