@@ -8,7 +8,7 @@ url="https://github.com/itszor/binutils-vc4"
 license=('GPL')
 groups=('vc4-toolchain')
 depends=()
-makedepends=('git' 'cmake')
+makedepends=('git')
 provides=('vc4-binutils')
 conflicts=('vc4-binutils')
 source=('git+https://github.com/itszor/binutils-vc4.git#branch=vc4')
@@ -35,6 +35,6 @@ build() {
 
 package() {
     msg "Installing VideoCore4 cross binutils"
-    cd "$srcdir/$_gitname"
+    cd "$srcdir/$_gitname/build"
     make DESTDIR="$pkgdir" install
 }
