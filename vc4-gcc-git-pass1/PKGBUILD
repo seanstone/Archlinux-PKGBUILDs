@@ -1,21 +1,22 @@
 # Maintainer: En Shih <seanstone5923@gmail.com>
-pkgname=vc4-gcc-git-pass1
+_target=vc4-elf
+_gitname=gcc-vc4
+pkgname=${_target}-gcc-stage1-git
 pkgver=r146716.e90ff43f967
 pkgrel=1
-pkgdesc="Port of GCC to the VideoCore4 processor."
+pkgdesc="The GNU Compiler Collection. Stage 1 for toolchain building (${_target})"
 arch=('x86_64')
-url="https://github.com/itszor/gcc-vc4"
+url="https://github.com/itszor/${_gitname}"
 license=('GPL')
-groups=('vc4-toolchain')
-depends=()
-makedepends=('git')
-provides=('vc4-gcc')
-conflicts=('vc4-gcc' 'vc4-gcc-git')
-source=('git+https://github.com/itszor/gcc-vc4.git#branch=vc4-gcc6')
+groups=("${_target}-toolchain")
+depends=('libmpc' 'zlib' "${_target}-binutils")
+makedepends=('git' 'gmp' 'mpfr')
+optdepends=("${_target}-newlib: Standard C library optimized for embedded systems")
+provides=("${_target}-gcc-stage1")
+conflicts=("${_target}-gcc" "${_target}-gcc-git" "${_target}-gcc-stage1")
+source=("git+https://github.com/itszor/${_gitname}.git#branch=vc4-gcc6")
 md5sums=('SKIP')
-options=('!buildflags')
-
-_gitname=gcc-vc4
+options=('!emptydirs' '!strip')
 
 pkgver() {
     cd "$srcdir/$_gitname"
@@ -24,16 +25,41 @@ pkgver() {
 
 prepare() {
     cd "$srcdir/$_gitname"
+
+    # hack! - some configure tests for header files using "$CPP $CPPFLAGS"
+    sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {libiberty,gcc}/configure
 }
 
 build() {
     cd "$srcdir/$_gitname"
     mkdir -p build && cd build
-    ../configure --target=vc4-elf --prefix=/usr --disable-nls \
-      --disable-ssp --enable-languages=c --without-headers --with-newlib \
-      --disable-decimal-float --disable-threads --disable-libatomic \
-      --disable-libitm --disable-libsanitizer --disable-libquadmath \
-      --disable-lto --enable-sjlj-exceptions
+    ../configure \
+        --prefix=/usr \
+        --target=${_target} \
+        --host=$CHOST \
+        --build=$CHOST \
+        --with-sysroot=/usr/${_target} \
+        --libdir=/usr/lib \
+        --libexecdir=/usr/lib \
+        --with-gnu-as \
+        --with-gnu-ld \
+        --with-python-dir=share/gcc-${_target} \
+        --with-newlib \
+        --without-headers \
+        --without-included-gettext \
+        --enable-checking=release \
+        --enable-languages=c \
+        --disable-decimal-float \
+        --disable-gold \
+        --disable-libatomic \
+        --disable-libitm \
+        --disable-libquadmath \
+        --disable-libsanitizer \
+        --disable-ssp \
+        --disable-nls \
+        --disable-threads \
+        --disable-lto \
+        --enable-sjlj-exceptions
     make
 }
 

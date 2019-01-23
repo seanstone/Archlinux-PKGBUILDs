@@ -1,21 +1,20 @@
 # Maintainer: En Shih <seanstone5923@gmail.com>
-pkgname=vc4-binutils-git
+_target=vc4-elf
+_gitname=binutils-vc4
+pkgname=${_target}-binutils-git
 pkgver=r25718.708acc851
 pkgrel=1
-pkgdesc="Cross binutils for the VideoCore4 cross-compiler"
+pkgdesc="A set of programs to assemble and manipulate binary and object files (${_target})"
 arch=('x86_64')
-url="https://github.com/itszor/binutils-vc4"
+url="https://github.com/itszor/${_gitname}"
 license=('GPL')
-groups=('vc4-toolchain')
-depends=()
+groups=("${_target}-toolchain")
+depends=('zlib')
 makedepends=('git')
-provides=('vc4-binutils')
-conflicts=('vc4-binutils')
-source=('git+https://github.com/itszor/binutils-vc4.git#branch=vc4')
+provides=("${_target}-binutils")
+conflicts=("${_target}-binutils")
+source=("git+https://github.com/itszor/${_gitname}.git#branch=vc4")
 md5sums=('SKIP')
-options=('!buildflags')
-
-_gitname=binutils-vc4
 
 pkgver() {
     cd "$srcdir/$_gitname"
@@ -24,17 +23,25 @@ pkgver() {
 
 prepare() {
     cd "$srcdir/$_gitname"
+    # Hack - see native package for details
+    sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
 }
 
 build() {
     cd "$srcdir/$_gitname"
     mkdir -p build && cd build
-    ../configure --target=vc4-elf --prefix=/usr --disable-werror
+    ../configure \
+        --target=${_target} \
+        --prefix=/usr \
+        --with-sysroot=/usr/${_target} \
+        --with-gnu-as \
+        --with-gnu-ld \
+        --enable-plugins \
+        --disable-werror
     make
 }
 
 package() {
-    msg "Installing VideoCore4 cross binutils"
     cd "$srcdir/$_gitname/build"
     make DESTDIR="$pkgdir" install
     rm -rf $pkgdir/usr/lib
