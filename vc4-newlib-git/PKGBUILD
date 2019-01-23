@@ -15,7 +15,7 @@ provides=("${_target}-newlib")
 conflicts=("${_target}-newlib")
 source=("git+https://github.com/itszor/${_gitname}.git#branch=vc4")
 md5sums=('SKIP')
-options=('!strip' '!emptydirs')
+options=('!strip' '!emptydirs' '!buildflags')
 
 pkgver() {
     cd "$srcdir/$_gitname"
