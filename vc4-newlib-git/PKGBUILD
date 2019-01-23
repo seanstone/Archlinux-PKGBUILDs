@@ -8,7 +8,7 @@ url="https://github.com/itszor/newlib-vc4"
 license=('GPL')
 groups=('vc4-toolchain')
 depends=()
-makedepends=('git')
+makedepends=('git' 'vc4-gcc')
 provides=('vc4-newlib')
 conflicts=('vc4-newlib')
 source=('git+https://github.com/itszor/newlib-vc4.git#branch=vc4')
@@ -27,7 +27,6 @@ prepare() {
 }
 
 build() {
-    msg "Building Newlib C library"
     cd "$srcdir/$_gitname"
     mkdir -p build && cd build
     ../configure --target=vc4-elf --prefix=/usr
@@ -35,7 +34,6 @@ build() {
 }
 
 package() {
-    msg "Installing Newlib C library"
     cd "$srcdir/$_gitname/build"
     make DESTDIR="$pkgdir" install
 }
