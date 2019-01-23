@@ -1,0 +1,41 @@
+# Maintainer: En Shih <seanstone5923@gmail.com>
+pkgname=vc4-newlib-git
+pkgver=r3904.89abe4a5
+pkgrel=1
+pkgdesc="A C standard library implementation intended for use on embedded systems (VideoCore4)"
+arch=('x86_64')
+url="https://github.com/itszor/newlib-vc4"
+license=('GPL')
+groups=('vc4-toolchain')
+depends=()
+makedepends=('git')
+provides=('vc4-newlib')
+conflicts=('vc4-newlib')
+source=('git+https://github.com/itszor/newlib-vc4.git#branch=vc4')
+md5sums=('SKIP')
+options=('!buildflags')
+
+_gitname=newlib-vc4
+
+pkgver() {
+    cd "$srcdir/$_gitname"
+    echo "r$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+    cd "$srcdir/$_gitname"
+}
+
+build() {
+    msg "Building Newlib C library"
+    cd "$srcdir/$_gitname"
+    mkdir -p build && cd build
+    ../configure --target=vc4-elf --prefix=/usr
+    make
+}
+
+package() {
+    msg "Installing Newlib C library"
+    cd "$srcdir/$_gitname/build"
+    make DESTDIR="$pkgdir" install
+}
