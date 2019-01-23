@@ -37,4 +37,6 @@ package() {
     msg "Installing VideoCore4 cross binutils"
     cd "$srcdir/$_gitname/build"
     make DESTDIR="$pkgdir" install
+    rm -rf $pkgdir/usr/lib
+    rm -rf $pkgdir/usr/share/{info,locale}
 }
