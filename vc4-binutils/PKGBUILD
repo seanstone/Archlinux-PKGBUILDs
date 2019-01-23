@@ -1,0 +1,40 @@
+# Maintainer: En Shih <seanstone5923@gmail.com>
+pkgname=vc4-binutils-git
+pkgver=r25718.708acc851
+pkgrel=1
+pkgdesc="Cross binutils for the VideoCore4 cross-compiler"
+arch=('x86_64')
+url="https://github.com/itszor/binutils-vc4"
+license=('GPL')
+groups=('vc4-toolchain')
+depends=()
+makedepends=('git' 'cmake')
+provides=('vc4-binutils')
+conflicts=('vc4-binutils')
+source=('git+https://github.com/itszor/binutils-vc4.git#branch=vc4')
+md5sums=('SKIP')
+options=('!buildflags')
+
+_gitname=binutils-vc4
+
+pkgver() {
+    cd "$srcdir/$_gitname"
+    echo "r$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+    cd "$srcdir/$_gitname"
+}
+
+build() {
+    cd "$srcdir/$_gitname"
+    mkdir -p build && cd build
+    ../configure --target=vc4-elf --prefix=/usr --disable-werror
+    make
+}
+
+package() {
+    msg "Installing VideoCore4 cross binutils"
+    cd "$srcdir/$_gitname"
+    make DESTDIR="$pkgdir" install
+}
