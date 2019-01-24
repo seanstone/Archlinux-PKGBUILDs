@@ -29,8 +29,10 @@ prepare() {
 build() {
     cd "$srcdir/$_gitname"
     mkdir -p build && cd build
-    ../configure --prefix=/usr --target=${_target}
-    make
+    ../configure \
+        --prefix=/usr \
+        --target=${_target}
+    make all
 }
 
 package() {

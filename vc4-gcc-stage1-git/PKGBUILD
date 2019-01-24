@@ -43,29 +43,25 @@ build() {
         --libexecdir=/usr/lib \
         --with-gnu-as \
         --with-gnu-ld \
-        --with-python-dir=share/gcc-${_target} \
         --with-newlib \
         --without-headers \
-        --without-included-gettext \
-        --enable-checking=release \
         --enable-languages=c \
+        --disable-nls \
+        --disable-ssp \
         --disable-decimal-float \
-        --disable-gold \
+        --disable-threads \
         --disable-libatomic \
         --disable-libitm \
-        --disable-libquadmath \
         --disable-libsanitizer \
-        --disable-ssp \
-        --disable-nls \
-        --disable-threads \
+        --disable-libquadmath \
         --disable-lto \
         --enable-sjlj-exceptions
-    make
+    make all-gcc
 }
 
 package() {
     cd "$srcdir/$_gitname/build"
-    make DESTDIR="$pkgdir" install
+    make DESTDIR="$pkgdir" install-gcc
     rm -r $pkgdir/usr/lib/*.so*
     rm -rf $pkgdir/usr/share
 }

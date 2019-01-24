@@ -34,11 +34,8 @@ build() {
         --target=${_target} \
         --prefix=/usr \
         --with-sysroot=/usr/${_target} \
-        --with-gnu-as \
-        --with-gnu-ld \
-        --enable-plugins \
         --disable-werror
-    make
+    make all
 }
 
 package() {

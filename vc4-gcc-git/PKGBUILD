@@ -40,15 +40,12 @@ build() {
         --libexecdir=/usr/lib \
         --with-gnu-as \
         --with-gnu-ld \
-        --with-python-dir=share/gcc-${_target} \
         --with-newlib \
-        --without-included-gettext \
-        --enable-checking=release \
+        --enable-languages=c,c++ \
+        --enable-threads \
         --disable-nls \
         --disable-ssp \
-        --enable-languages=c,c++ \
         --disable-decimal-float \
-        --enable-threads \
         --disable-libatomic \
         --disable-libsanitizer \
         --disable-libquadmath \
