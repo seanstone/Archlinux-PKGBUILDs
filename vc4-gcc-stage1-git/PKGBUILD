@@ -62,6 +62,5 @@ build() {
 package() {
     cd "$srcdir/$_gitname/build"
     make DESTDIR="$pkgdir" install-gcc
-    rm -r $pkgdir/usr/lib/*.so*
     rm -rf $pkgdir/usr/share
 }
