@@ -1,0 +1,37 @@
+# Maintainer: En Shih <seanstone5923@gmail.com>
+_gitname=usbboot
+pkgname=rpiboot-git
+pkgver=r68.56a8bd4
+pkgrel=1
+pkgdesc="Raspberry Pi USB boot"
+arch=('any')
+url="https://github.com/raspberrypi/${_gitname}"
+license=('Apache')
+depends=()
+makedepends=('git')
+provides=("rpiboot")
+conflicts=("rpiboot")
+source=("git+https://github.com/raspberrypi/${_gitname}.git")
+md5sums=('SKIP')
+
+pkgver() {
+    cd "$srcdir/$_gitname"
+    echo "r$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+    cd "$srcdir/$_gitname"
+}
+
+build() {
+    cd "$srcdir/$_gitname"
+    make
+}
+
+package() {
+    cd "$srcdir/$_gitname"
+    mkdir -p "$pkgdir/usr/bin/"
+    mkdir -p "$pkgdir/usr/share/rpiboot/"
+    install -m755 rpiboot "$pkgdir/usr/bin/"
+    install -m644 msd/{bootcode.bin,start.elf} "$pkgdir/usr/share/rpiboot/"
+}
