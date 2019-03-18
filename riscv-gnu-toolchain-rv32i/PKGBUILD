@@ -1,25 +1,26 @@
 # Maintainer: En Shih <seanstone5923@gmail.com>
 
-pkgname=riscv-gnu-toolchain-rv32i
-pkgver=20171231
+pkgname=riscv-gnu-toolchain-rv32imc
+pkgver=20190314
 _commit=bf5697a
 pkgrel=1
 pkgdesc="RISC-V GNU Compiler Toolchain (rv32i)"
 arch=('i686' 'x86_64')
-url="https://github.com/riscv/riscv-gnu-toolchain-rv32i"
+url="https://github.com/riscv/riscv-gnu-toolchain"
 license=('LGPL')
 depends=()
 makedepends=('git')
 conflicts=()
-options=()
+options=(!buildflags !makeflags)
 install=
 source=("git+https://github.com/riscv/riscv-gnu-toolchain.git"
         "git+https://github.com/riscv/riscv-binutils-gdb.git"
         "git+https://github.com/riscv/riscv-dejagnu.git"
         "git+https://github.com/riscv/riscv-gcc.git"
         "git+https://github.com/riscv/riscv-glibc.git"
-        "git+https://github.com/riscv/riscv-newlib.git")
-md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+        "git+https://github.com/riscv/riscv-newlib.git"
+        "git+https://github.com/riscv/riscv-qemu.git")
+md5sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 _gitname="riscv-gnu-toolchain"
 
@@ -31,11 +32,13 @@ pkgver() {
 prepare() {
   cd "$srcdir/$_gitname"
   git submodule init
-  git config submodule.riscv-binutils-gdb.url $srcdir/riscv-binutils-gdb
+  git config submodule.riscv-binutils.url $srcdir/riscv-binutils-gdb
   git config submodule.riscv-dejagnu.url $srcdir/riscv-dejagnu
   git config submodule.riscv-gcc.url $srcdir/riscv-gcc
+  git config submodule.riscv-gdb.url $srcdir/riscv-binutils-gdb
   git config submodule.riscv-glibc.url $srcdir/riscv-glibc
   git config submodule.riscv-newlib.url $srcdir/riscv-newlib
+  git config submodule.riscv-qemu.url $srcdir/riscv-qemu
   git submodule update
 }
 
@@ -43,7 +46,7 @@ build() {
   cd "$srcdir/$_gitname"
   mkdir -p build
   cd build
-  ../configure --with-arch=rv32i
+  ../configure --with-arch=rv32imc
   make -j4
 }
 
