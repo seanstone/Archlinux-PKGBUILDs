@@ -1,0 +1,46 @@
+# Maintainer: En Shih <seanstone5923@gmail.com>
+_target=riscv32-unknown-elf
+_gitname=riscv-newlib
+pkgname=${_target}-newlib-git
+pkgver=r18040.77e11e180
+pkgrel=1
+pkgdesc="A C library intended for use on embedded systems (${_target})"
+arch=('any')
+url="https://github.com/riscv/${_gitname}"
+license=('GPL')
+groups=("${_target}-toolchain")
+depends=()
+makedepends=('git' "${_target}-gcc-stage1")
+provides=("${_target}-newlib")
+conflicts=("${_target}-newlib")
+source=("git+https://github.com/riscv/${_gitname}.git")
+md5sums=('SKIP')
+options=('!strip' '!emptydirs' '!buildflags')
+
+pkgver() {
+    cd "$srcdir/$_gitname"
+    echo "r$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+    cd "$srcdir/$_gitname"
+}
+
+build() {
+    cd "$srcdir/$_gitname"
+    mkdir -p build && cd build
+    ../configure \
+        --prefix=/usr \
+        --target=${_target} \
+		--enable-newlib-io-long-double \
+		--enable-newlib-io-long-long \
+		--enable-newlib-io-c99-formats \
+        --with-arch=rv32imc
+    make all
+}
+
+package() {
+    cd "$srcdir/$_gitname/build"
+    make DESTDIR="$pkgdir" install
+    make DESTDIR="$pkgdir" install
+}

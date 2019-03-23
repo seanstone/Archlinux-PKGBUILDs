@@ -1,0 +1,65 @@
+# Maintainer: En Shih <seanstone5923@gmail.com>
+_target=riscv32-unknown-elf
+_gitname=riscv-gcc
+pkgname=${_target}-gcc-stage1-git
+pkgver=r161737.be9abee2aaa
+pkgrel=1
+pkgdesc="The GNU Compiler Collection. Stage 1 for toolchain building (${_target})"
+arch=('x86_64')
+url="https://github.com/riscv/${_gitname}"
+license=('GPL')
+groups=("${_target}-toolchain")
+depends=('libmpc' 'zlib' "${_target}-binutils")
+makedepends=('git' 'gmp' 'mpfr')
+optdepends=("${_target}-newlib: Standard C library optimized for embedded systems")
+provides=("${_target}-gcc-stage1")
+conflicts=("${_target}-gcc" "${_target}-gcc-git" "${_target}-gcc-stage1")
+source=("git+https://github.com/riscv/${_gitname}.git")
+md5sums=('SKIP')
+options=('!emptydirs' '!strip')
+
+pkgver() {
+    cd "$srcdir/$_gitname"
+    echo "r$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+    cd "$srcdir/$_gitname"
+
+    # hack! - some configure tests for header files using "$CPP $CPPFLAGS"
+    sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {libiberty,gcc}/configure
+}
+
+build() {
+    cd "$srcdir/$_gitname"
+    mkdir -p build && cd build
+    ../configure \
+        --prefix=/usr \
+        --target=${_target} \
+        --host=$CHOST \
+        --build=$CHOST \
+        --with-sysroot=/usr/${_target} \
+        --libdir=/usr/lib \
+        --libexecdir=/usr/lib \
+		--with-newlib \
+		--without-headers \
+		--disable-shared \
+		--disable-threads \
+		--enable-tls \
+		--enable-languages=c \
+		--disable-libatomic \
+		--disable-libmudflap \
+		--disable-libssp \
+		--disable-libquadmath \
+		--disable-libgomp \
+		--disable-nls \
+		--disable-bootstrap \
+        --with-arch=rv32imc
+    make all-gcc
+}
+
+package() {
+    cd "$srcdir/$_gitname/build"
+    make DESTDIR="$pkgdir" install-gcc
+    rm -rf $pkgdir/usr/share
+}

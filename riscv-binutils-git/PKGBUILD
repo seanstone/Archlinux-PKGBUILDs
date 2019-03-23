@@ -1,0 +1,51 @@
+# Maintainer: En Shih <seanstone5923@gmail.com>
+_target=riscv32-unknown-elf
+_gitname=riscv-binutils-gdb
+pkgname=${_target}-binutils-git
+pkgver=r94668.82dcb8613e
+pkgrel=1
+pkgdesc="A set of programs to assemble and manipulate binary and object files (${_target})"
+arch=('x86_64')
+url="https://github.com/riscv/${_gitname}"
+license=('GPL')
+groups=("${_target}-toolchain")
+depends=('zlib')
+makedepends=('git')
+provides=("${_target}-binutils")
+conflicts=("${_target}-binutils")
+source=("git+https://github.com/riscv/${_gitname}.git")
+md5sums=('SKIP')
+
+pkgver() {
+    cd "$srcdir/$_gitname"
+    echo "r$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+    cd "$srcdir/$_gitname"
+    # Hack - see native package for details
+    sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
+}
+
+build() {
+    cd "$srcdir/$_gitname"
+    mkdir -p build && cd build
+    ../configure \
+        --target=${_target} \
+        --prefix=/usr \
+        --with-sysroot=/usr/${_target} \
+        --disable-werror \
+		--disable-nls \
+		--disable-gdb \
+		--disable-sim \
+		--disable-libdecnumber \
+		--disable-readline
+    make all
+}
+
+package() {
+    cd "$srcdir/$_gitname/build"
+    make DESTDIR="$pkgdir" install
+    rm -rf $pkgdir/usr/lib
+    rm -rf $pkgdir/usr/share/{info,locale}
+}
