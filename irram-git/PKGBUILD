@@ -1,0 +1,35 @@
+# Maintainer: En Shih <seanstone5923@gmail.com>
+pkgname=irram-git
+pkgver=r312.6545f78
+pkgrel=1
+pkgdesc="Exact real arithmetic in C++"
+arch=('x86_64')
+url="https://github.com/fbrausse/iRRAM"
+license=('GPL')
+depends=('gmp' 'mpfr')
+makedepends=('git' 'autoconf' 'libtool')
+provides=('irram')
+conflicts=('irram')
+source=('git+https://github.com/fbrausse/iRRAM')
+md5sums=('SKIP')
+
+pkgver() {
+    cd "$srcdir/iRRAM"
+    echo "r$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+    cd "$srcdir/iRRAM"
+    autoreconf -i
+}
+
+build() {
+  cd "$srcdir/iRRAM"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "$srcdir/iRRAM"
+  make DESTDIR=$pkgdir install
+}
