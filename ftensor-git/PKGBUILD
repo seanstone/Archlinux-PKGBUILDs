@@ -1,0 +1,40 @@
+# Maintainer: En Shih <seanstone5923@gmail.com>
+pkgname=ftensor-git
+pkgver=r233+.eba1da5c38c0+
+pkgrel=1
+pkgdesc="Exact real arithmetic in C++"
+arch=('x86_64')
+url="http://www.wlandry.net/Projects/FTensor"
+license=('GPL')
+depends=()
+makedepends=('mercurial' 'waf')
+provides=('ftensor')
+conflicts=('ftensor')
+source=('hg+https://bitbucket.org/wlandry/ftensor' 'wscript.patch')
+md5sums=('SKIP' 'SKIP')
+
+pkgver() {
+    cd "$srcdir/ftensor"
+    printf "r%s.%s" "$(hg identify -n)" "$(hg identify -i)"
+}
+
+prepare() {
+    cd "$srcdir/ftensor"
+    patch -Np1 -i "$srcdir/wscript.patch"
+    waf configure --prefix=$pkgdir
+}
+
+build() {
+    cd "$srcdir/ftensor"
+    waf
+}
+
+check() {
+    cd "$srcdir/ftensor"
+    ./build/conformance
+}
+
+package() {
+    cd "$srcdir/ftensor"
+    waf install
+}

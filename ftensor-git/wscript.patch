@@ -1,0 +1,9 @@
+diff -r eba1da5c38c0 wscript
+--- a/wscript	Sun Apr 15 18:29:23 2018 +0000
++++ b/wscript	Fri May 31 10:46:53 2019 +0800
+@@ -1,3 +1,5 @@
++import cxx14
++
+ def options(opt):
+     opt.load('compiler_cxx gnu_dirs cxx14')
+ 
