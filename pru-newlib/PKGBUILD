@@ -3,7 +3,7 @@ _target=pru
 _gitname=newlib-cygwin
 _commit=4f7a6c326aab3dfff139ad848c45210c3f097317
 pkgname=${_target}-newlib
-pkgver=r18040.77e11e180
+pkgver=4f7a6c326aab3dfff139ad848c45210c3f097317
 pkgrel=1
 pkgdesc="A C library intended for use on embedded systems (${_target})"
 arch=('any')
@@ -43,6 +43,6 @@ build() {
 
 package() {
     cd "$srcdir/$_gitname-$_commit/build"
-    make DESTDIR="$pkgdir" install
+    make DESTDIR="$pkgdir" install || true
     make DESTDIR="$pkgdir" install
 }
