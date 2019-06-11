@@ -1,0 +1,48 @@
+# Maintainer: En Shih <seanstone5923@gmail.com>
+_target=pru
+_gitname=newlib-cygwin
+_commit=4f7a6c326aab3dfff139ad848c45210c3f097317
+pkgname=${_target}-newlib
+pkgver=r18040.77e11e180
+pkgrel=1
+pkgdesc="A C library intended for use on embedded systems (${_target})"
+arch=('any')
+url="https://github.com/dinuxbg/gnupru"
+license=('GPL')
+groups=("${_target}-toolchain")
+depends=()
+makedepends=('git' "${_target}-gcc-stage1")
+source=("https://github.com/mirror/${_gitname}/archive/${_commit}.tar.gz" "git+https://github.com/dinuxbg/gnupru")
+md5sums=('SKIP' 'SKIP')
+options=('!strip' '!emptydirs' '!buildflags')
+
+pkgver() {
+    echo "$_commit"
+}
+
+prepare() {
+    cd "$srcdir/$_gitname-$_commit"
+
+    ls "$srcdir/gnupru/patches/${_gitname}" | sort | while read PATCH
+    do
+        patch -p1 < $srcdir/gnupru/patches/${_gitname}/$PATCH || die "Could not apply patch $PATCH"
+    done
+}
+
+build() {
+    cd "$srcdir/$_gitname-$_commit"
+    mkdir -p build && cd build
+    ../configure \
+        --prefix=/usr \
+        --target=${_target} \
+		--disable-newlib-fvwrite-in-streamio \
+        --enable-newlib-nano-formatted-io \
+        --disable-newlib-multithread
+    make all
+}
+
+package() {
+    cd "$srcdir/$_gitname-$_commit/build"
+    make DESTDIR="$pkgdir" install
+    make DESTDIR="$pkgdir" install
+}

@@ -1,8 +1,9 @@
 # Maintainer: En Shih <seanstone5923@gmail.com>
 _target=pru
 _gitname=binutils-gdb
-pkgname=${_target}-binutils-git
-pkgver=r95786.7fb4aca842
+_commit=0930cb3021b8078b34cf216e79eb8608d017864f
+pkgname=${_target}-binutils
+pkgver=0930cb3021b8078b34cf216e79eb8608d017864f
 pkgrel=1
 pkgdesc="A set of programs to assemble and manipulate binary and object files (${_target})"
 arch=('x86_64')
@@ -11,29 +12,27 @@ license=('GPL')
 groups=("${_target}-toolchain")
 depends=('zlib')
 makedepends=('git')
-provides=("${_target}-binutils")
-conflicts=("${_target}-binutils")
-source=("git+https://github.com/bminor/${_gitname}.git#commit=0930cb3021b8078b34cf216e79eb8608d017864f" "git+https://github.com/dinuxbg/gnupru")
+source=("https://github.com/bminor/${_gitname}/archive/${_commit}.tar.gz" "git+https://github.com/dinuxbg/gnupru")
 md5sums=('SKIP' 'SKIP')
 
 pkgver() {
-    cd "$srcdir/$_gitname"
-    echo "r$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+    echo "$_commit"
 }
 
 prepare() {
-    cd "$srcdir/$_gitname"
+    cd "$srcdir/$_gitname-$_commit"
+    
     # Hack - see native package for details
     sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
 
-    ls "$srcdir/gnupru/patches/binutils-gdb" | sort | while read PATCH
+    ls "$srcdir/gnupru/patches/${_gitname}" | sort | while read PATCH
     do
-        git am -3 < $srcdir/gnupru/patches/binutils-gdb/$PATCH || die "Could not apply patch $PATCH"
+        patch -p1 < $srcdir/gnupru/patches/${_gitname}/$PATCH || die "Could not apply patch $PATCH"
     done
 }
 
 build() {
-    cd "$srcdir/$_gitname"
+    cd "$srcdir/$_gitname-$_commit"
     mkdir -p build && cd build
     ../configure \
         --target=${_target} \
@@ -46,7 +45,7 @@ build() {
 }
 
 package() {
-    cd "$srcdir/$_gitname/build"
+    cd "$srcdir/$_gitname-$_commit/build"
     make DESTDIR="$pkgdir" install
     rm -rf $pkgdir/usr/lib
     rm -rf $pkgdir/usr/share/{info,locale}

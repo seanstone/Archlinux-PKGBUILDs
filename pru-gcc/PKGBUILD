@@ -1,0 +1,56 @@
+# Maintainer: En Shih <seanstone5923@gmail.com>
+_target=pru
+_gitname=gcc
+_commit=c45bebb5ee928eacafa4c408e499bf4f51388cf3
+pkgname=${_target}-gcc
+pkgver=r161737.be9abee2aaa
+pkgrel=1
+pkgdesc="The GNU Compiler Collection (${_target})"
+arch=('x86_64')
+url="https://github.com/dinuxbg/gnupru"
+license=('GPL')
+groups=("${_target}-toolchain")
+depends=('libmpc' 'zlib' "${_target}-binutils" "${_target}-newlib")
+makedepends=('git' 'gmp' 'mpfr')
+source=("https://github.com/gcc-mirror/${_gitname}/archive/${_commit}.tar.gz" "git+https://github.com/dinuxbg/gnupru")
+md5sums=('SKIP' 'SKIP')
+options=('!emptydirs' '!strip')
+
+pkgver() {
+    echo "$_commit"
+}
+
+prepare() {
+    cd "$srcdir/$_gitname-$_commit"
+
+    # hack! - some configure tests for header files using "$CPP $CPPFLAGS"
+    sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {libiberty,gcc}/configure
+
+    ls "$srcdir/gnupru/patches/${_gitname}" | sort | while read PATCH
+    do
+        patch -p1 < $srcdir/gnupru/patches/${_gitname}/$PATCH || die "Could not apply patch $PATCH"
+    done
+}
+
+build() {
+    cd "$srcdir/$_gitname-$_commit"
+    mkdir -p build && cd build
+    ../configure \
+        --prefix=/usr \
+        --target=${_target} \
+        --with-sysroot=/usr/${_target} \
+        --libdir=/usr/lib \
+        --libexecdir=/usr/lib \
+		--disable-nls \
+        --with-newlib \
+        --with-bugurl="https://github.com/dinuxbg/gnupru/issues" \
+		--enable-languages=c,c++
+    make
+}
+
+package() {
+    cd "$srcdir/$_gitname-$_commit/build"
+    make DESTDIR="$pkgdir" install
+    rm -r $pkgdir/usr/lib/*.so*
+    rm -rf $pkgdir/usr/share
+}
