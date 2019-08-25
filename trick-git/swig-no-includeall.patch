@@ -1,15 +1,39 @@
 diff --git a/libexec/trick/make_makefile_swig b/libexec/trick/make_makefile_swig
-index 364d9d40..a16913d7 100755
+index 62884f5a..2d91a342 100755
 --- a/libexec/trick/make_makefile_swig
 +++ b/libexec/trick/make_makefile_swig
-@@ -231,8 +231,8 @@ SWIG_SRC = \$(subst .i,.cpp,\$(SWIG_I)) $swig_src_dir/top.cpp
+@@ -198,7 +198,7 @@ SWIG_SRC = \$(subst .i,.cpp,\$(SWIG_I)) $swig_src_dir/top.cpp
  
- \$(SWIG_SRC) : %.cpp: %.i | \$(SWIG_I)
+ \$(SWIG_SRC) : %.cpp: %.i | %.d \$(SWIG_I)
  \t\$(PRINT_SWIG)
--\t\@echo \$(SWIG) \$(TRICK_INCLUDE) \$(TRICK_DEFINES) \$(TRICK_VERSIONS) \$(TRICK_SWIG_FLAGS) -c++ -python -includeall -ignoremissing -w201,303,325,362,389,401,451 -outdir trick -o \$@ \$< >> \$(MAKE_OUT)
--\t\$(ECHO_CMD)\$(SWIG) \$(TRICK_INCLUDE) \$(TRICK_DEFINES) \$(TRICK_VERSIONS) \$(TRICK_SWIG_FLAGS) -c++ -python -includeall -ignoremissing -w201,303,325,362,389,401,451 -outdir trick -o \$@ \$< 2>&1 | \$(TEE) -a \$(MAKE_OUT) ; exit \$\${PIPESTATUS[0]}
-+\t\@echo \$(SWIG) \$(TRICK_INCLUDE) \$(TRICK_DEFINES) \$(TRICK_VERSIONS) \$(TRICK_SWIG_FLAGS) -c++ -python -ignoremissing -w201,303,325,362,389,401,451 -outdir trick -o \$@ \$< >> \$(MAKE_OUT)
-+\t\$(ECHO_CMD)\$(SWIG) \$(TRICK_INCLUDE) \$(TRICK_DEFINES) \$(TRICK_VERSIONS) \$(TRICK_SWIG_FLAGS) -c++ -python -ignoremissing -w201,303,325,362,389,401,451 -outdir trick -o \$@ \$< 2>&1 | \$(TEE) -a \$(MAKE_OUT) ; exit \$\${PIPESTATUS[0]}
+-\t\$(call ECHO_AND_LOG,\$(SWIG) \$(TRICK_INCLUDE) \$(TRICK_DEFINES) \$(TRICK_VERSIONS) \$(TRICK_SWIG_FLAGS) -c++ -python -includeall -ignoremissing -w201 -w303 -w325 -w362 -w389 -w401 -w451 -MMD -MP -outdir trick -o \$@ \$<)
++\t\$(call ECHO_AND_LOG,\$(SWIG) \$(TRICK_INCLUDE) \$(TRICK_DEFINES) \$(TRICK_VERSIONS) \$(TRICK_SWIG_FLAGS) -c++ -python -ignoremissing -w201 -w303 -w325 -w362 -w389 -w401 -w451 -MMD -MP -outdir trick -o \$@ \$<)
  
- # SWIG_OBJECTS =================================================================
+ \$(SWIG_SRC:.cpp=.d): ;
  
+diff --git a/share/trick/makefiles/trickify.mk b/share/trick/makefiles/trickify.mk
+index f122b6a5..7cdddd3a 100644
+--- a/share/trick/makefiles/trickify.mk
++++ b/share/trick/makefiles/trickify.mk
+@@ -138,7 +138,7 @@ $(SWIG_OBJECTS): %.o: %.cpp
+ 
+ $(SWIG_OBJECTS:.o=.cpp): %.cpp: %.i | %.d $(TRICKIFY_PYTHON_DIR) $(SWIG_OBJECTS:.o=.i)
+ 	$(info $(call COLOR,SWIGing)    $<)
+-	$(call ECHO_AND_LOG,$(SWIG) $(TRICK_INCLUDE) $(TRICK_DEFINES) $(TRICK_VERSIONS) $(TRICK_SWIG_FLAGS) -c++ -python -includeall -ignoremissing -w201 -w303 -w325 -w362 -w389 -w401 -w451 -MMD -MP -outdir $(TRICKIFY_PYTHON_DIR) -o $@ $<)
++	$(call ECHO_AND_LOG,$(SWIG) $(TRICK_INCLUDE) $(TRICK_DEFINES) $(TRICK_VERSIONS) $(TRICK_SWIG_FLAGS) -c++ -python -ignoremissing -w201 -w303 -w325 -w362 -w389 -w401 -w451 -MMD -MP -outdir $(TRICKIFY_PYTHON_DIR) -o $@ $<)
+ 
+ $(SWIG_OBJECTS:.o=.d): ;
+ 
+diff --git a/trick_source/trick_swig/Makefile b/trick_source/trick_swig/Makefile
+index 6a1b58fb..6f06ec1d 100644
+--- a/trick_source/trick_swig/Makefile
++++ b/trick_source/trick_swig/Makefile
+@@ -76,7 +76,7 @@ $(OBJECT_FILES): $(OBJ_DIR)/%.o : %.cpp
+ 	$(TRICK_CXX) $(TRICK_CXXFLAGS) $(TRICK_SYSTEM_CXXFLAGS) -c $< -o $@
+ 
+ $(SWIG_SRC_FILES): swig_${TRICK_HOST_CPU}/%_wrap.cpp : %.i
+-	 $(SWIG) $(SWIG_DEFS) -I${TRICK_HOME}/trick_source -I${TRICK_HOME}/include -I${TRICK_HOME} -c++ -python -includeall -ignoremissing -w201,362,389,451 -o $@ -outdir ${TRICK_HOME}/share/trick/swig $<
++	 $(SWIG) $(SWIG_DEFS) -I${TRICK_HOME}/trick_source -I${TRICK_HOME}/include -I${TRICK_HOME} -c++ -python - -ignoremissing -w201,362,389,451 -o $@ -outdir ${TRICK_HOME}/share/trick/swig $<
+ 
+ $(TRICK_LIB) : $(SWIG_OBJECT_FILES) $(OBJECT_FILES)
+ 	ar crs $@ $?
